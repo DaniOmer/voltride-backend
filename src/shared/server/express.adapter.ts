@@ -17,8 +17,10 @@ export class ExpressAdapater implements ServerStrategy {
 
   start(): void {
     try {
-      this.app.listen(AppConfig.PORT, () => {
-        this.logger.info(`Express server is running on port ${AppConfig.PORT}`);
+      this.app.listen(AppConfig.server.port, () => {
+        this.logger.info(
+          `Express server is running on port ${AppConfig.server.port}`
+        );
       });
     } catch (error) {
       this.logger.error("Error starting express server", error);

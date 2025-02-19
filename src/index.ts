@@ -1,13 +1,22 @@
 import { AppConfig } from "./config/app.config";
+import { MongooseConfig } from "./shared/database/mongodb/mongoose.config";
 import { ServerFactory, ServerAdapter } from "./shared/server/server.factory";
 import { userRouter } from "./modules/users/interface/routes/user.router";
 
 async function startApp() {
-  // Initialize server
-  const app = ServerFactory.create(AppConfig.WEB_SERVER as ServerAdapter);
+  try {
+    // Initialize mongo database
+    await MongooseConfig.get();
 
-  // Register user routes
-  userRouter.registerRoutes(app);
+    // Initialize server
+    const app = ServerFactory.create(AppConfig.server.name as ServerAdapter);
+
+    // Register user routes
+    userRouter.registerRoutes(app);
+  } catch (error) {
+    console.error("Error starting the app", error);
+    process.exit(1);
+  }
 }
 
 startApp();

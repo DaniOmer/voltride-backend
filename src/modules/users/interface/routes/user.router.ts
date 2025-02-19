@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import { ServerStrategy } from "../../../../shared";
 import {
   BaseRouter,
@@ -14,7 +16,22 @@ class UserRouter implements BaseRouter {
       "get",
       "/api/users",
       async (req: ServerRequest, res: ServerResponse) => {
-        ApiResponse.success(res, "Users fetched successfully", { users: [] });
+        const userSchema = new mongoose.Schema({
+          name: String,
+          email: String,
+          password: String,
+        });
+        const User = mongoose.model("User", userSchema);
+        new User({
+          name: "John Doe",
+          email: "wLQ6w@example.com",
+          password: "password",
+        }).save();
+
+        const users = await User.find({});
+        console.log(users);
+
+        ApiResponse.success(res, "Users fetched successfully", { users });
       }
     );
   }

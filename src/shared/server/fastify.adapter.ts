@@ -20,13 +20,16 @@ export class FastifyAdapter implements ServerStrategy {
   }
 
   start(): void {
-    this.app.listen({ port: AppConfig.PORT as number }, (err, address) => {
-      if (err) {
-        this.logger.error("Error starting fastify server", err);
-        process.exit(1);
+    this.app.listen(
+      { port: AppConfig.server.port as number },
+      (err, address) => {
+        if (err) {
+          this.logger.error("Error starting fastify server", err);
+          process.exit(1);
+        }
+        this.logger.info(`Fastify server is running on ${address}`);
       }
-      this.logger.info(`Fastify server is running on ${address}`);
-    });
+    );
   }
 
   stop(): void {
