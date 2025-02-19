@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-
+import { User } from "./user.model";
 import { ServerStrategy } from "../../../../shared";
 import {
   BaseRouter,
@@ -9,29 +8,21 @@ import {
 import { ApiResponse } from "../../../../shared/api/api.response";
 
 class UserRouter implements BaseRouter {
-  constructor() {}
-
   registerRoutes(server: ServerStrategy): void {
     server.registerRoute(
       "get",
       "/api/users",
       async (req: ServerRequest, res: ServerResponse) => {
-        const userSchema = new mongoose.Schema({
-          name: String,
-          email: String,
-          password: String,
-        });
-        const User = mongoose.model("User", userSchema);
-        new User({
-          name: "John Doe",
-          email: "wLQ6w@example.com",
-          password: "password",
-        }).save();
+        try {
+          const user = await User.create({
+            firstName: "John",
+            lastName: "Doe",
+          });
 
-        const users = await User.find({});
-        console.log(users);
-
-        ApiResponse.success(res, "Users fetched successfully", { users });
+          ApiResponse.success(res, "User created successfully", { user });
+        } catch (error) {
+          ApiResponse.error(res, `Error creating user ${error}`, 500);
+        }
       }
     );
   }
