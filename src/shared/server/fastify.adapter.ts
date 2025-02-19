@@ -1,18 +1,32 @@
 import { Logger } from "winston";
+import fastify, {
+  FastifyInstance,
+  FastifyReply,
+  FastifyRequest,
+} from "fastify";
 
-import { ServerStrategy } from "./server.strategy";
+import { ServerStrategy, HttpMethod } from "./server.strategy";
 import { LoggerConfig } from "../logger/winston.logger";
+import { AppConfig } from "../../config/app.config";
 
 export class FastifyAdapter implements ServerStrategy {
   readonly logger: Logger;
+  readonly app: FastifyInstance;
 
   constructor() {
+    this.app = fastify();
     this.logger = LoggerConfig.get().logger;
+    this.start();
   }
 
   start(): void {
-    console.log("Starting fastify server...");
-    this.logger.info("Starting fastify server...");
+    this.app.listen({ port: AppConfig.PORT as number }, (err, address) => {
+      if (err) {
+        this.logger.error("Error starting fastify server", err);
+        process.exit(1);
+      }
+      this.logger.info(`Fastify server is running on ${address}`);
+    });
   }
 
   stop(): void {
@@ -21,7 +35,21 @@ export class FastifyAdapter implements ServerStrategy {
   }
 
   registerRoute(method: string, path: string, handler: Function): void {
-    this.logger.info("Registering api routes and middlewares...");
+    const lowerMethod = method.toLowerCase() as HttpMethod;
+
+    this.app.route({
+      method: lowerMethod,
+      url: path,
+      handler: async (request: FastifyRequest, reply: FastifyReply) => {
+        try {
+          await handler(request, reply);
+        } catch (error) {
+          reply.status(500).send({ error: "Internal Server Error" });
+        }
+      },
+    });
+
+    this.logger.info(`Registered route: [${method.toUpperCase()}] ${path}`);
   }
 
   registerMiddleware(): void {

@@ -11,8 +11,8 @@ export class ExpressAdapater implements ServerStrategy {
 
   constructor() {
     this.app = express();
-    this.start();
     this.logger = LoggerConfig.get().logger;
+    this.start();
   }
 
   start(): void {
@@ -22,7 +22,7 @@ export class ExpressAdapater implements ServerStrategy {
       });
     } catch (error) {
       this.logger.error("Error starting express server", error);
-      throw new Error("Error starting express server");
+      process.exit(1);
     }
   }
   stop(): void {

@@ -1,6 +1,9 @@
 import { ServerStrategy } from "../../../../shared";
-import { BaseRouter } from "../../../../shared/api/types/router.interface";
-import { Request, Response, NextFunction } from "express";
+import {
+  BaseRouter,
+  ServerRequest,
+  ServerResponse,
+} from "../../../../shared/api/types/router.interface";
 import { ApiResponse } from "../../../../shared/api/api.response";
 
 class UserRouter implements BaseRouter {
@@ -10,7 +13,7 @@ class UserRouter implements BaseRouter {
     server.registerRoute(
       "get",
       "/api/users",
-      async (req: Request, res: Response, next: NextFunction) => {
+      async (req: ServerRequest, res: ServerResponse) => {
         ApiResponse.success(res, "Users fetched successfully", { users: [] });
       }
     );
