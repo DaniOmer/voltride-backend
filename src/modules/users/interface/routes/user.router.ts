@@ -1,28 +1,28 @@
-import { User } from "./user.model";
+import { User } from "../../domain";
+import { UserController } from "../controllers/user.controller";
+import { UserCreateHandler } from "../../application";
+import { PostgresUserRepository } from "../../data-access/repositories/postgres.repository";
+
 import { ServerStrategy } from "../../../../shared";
-import {
-  BaseRouter,
-  ServerRequest,
-  ServerResponse,
-} from "../../../../shared/api/types/router.interface";
-import { ApiResponse } from "../../../../shared/api/api.response";
+import { BaseRouter, ServerRequest, ServerResponse } from "../../../../shared";
 
 class UserRouter implements BaseRouter {
+  private readonly createUserHandler: UserCreateHandler;
+  private readonly controller: UserController;
+  private readonly repository: PostgresUserRepository;
+
+  constructor() {
+    this.repository = new PostgresUserRepository();
+    this.createUserHandler = new UserCreateHandler(this.repository);
+    this.controller = new UserController(this.createUserHandler);
+  }
+
   registerRoutes(server: ServerStrategy): void {
     server.registerRoute(
-      "get",
+      "post",
       "/api/users",
       async (req: ServerRequest, res: ServerResponse) => {
-        try {
-          const user = await User.create({
-            firstName: "John",
-            lastName: "Doe",
-          });
-
-          ApiResponse.success(res, "User created successfully", { user });
-        } catch (error) {
-          ApiResponse.error(res, `Error creating user ${error}`, 500);
-        }
+        await this.controller.createUser.bind(this.controller)(req, res);
       }
     );
   }

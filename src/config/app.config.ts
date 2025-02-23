@@ -28,7 +28,7 @@ export const AppConfig = {
   },
   jwt: {
     secret: process.env.JWT_SECRET_CURRENT,
-    expiresIn: "7d",
+    expiresIn: 604800,
   },
   token: {
     defaultExpiresIn: process.env.TOKEN_DEFAULT_EXPIRATION || 86400,

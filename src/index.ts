@@ -7,10 +7,13 @@ import { userRouter } from "./modules/users/interface/routes/user.router";
 async function startApp() {
   try {
     // Initialize mongo database
-    await MongooseConfig.get();
+    const mongoose = MongooseConfig.get();
 
     // Initialize postgres database
-    (await SequelizeConfig.get()).sequelize.authenticate();
+    const sequelize = SequelizeConfig.get().sequelize;
+    sequelize.authenticate();
+    // sequelize.addModels([__dirname + "/**/*.model.ts"]);
+    // sequelize.sync();
 
     // Initialize server
     const app = ServerFactory.create(AppConfig.server.name as ServerAdapter);
