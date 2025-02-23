@@ -11,5 +11,5 @@ export interface ServerStrategy {
   start(): void;
   stop(): void;
   registerRoute(method: HttpMethod, path: string, handler: Function): void;
-  registerMiddleware(): void;
+  registerMiddleware(middleware: any): void;
 }

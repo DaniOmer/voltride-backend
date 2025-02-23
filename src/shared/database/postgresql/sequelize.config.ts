@@ -1,4 +1,4 @@
-import { Sequelize } from "sequelize";
+import { Sequelize } from "sequelize-typescript";
 
 import { AppConfig } from "../../../config/app.config";
 
@@ -20,21 +20,22 @@ export class SequelizeConfig {
     this.sequelize = sequelize;
   }
 
-  public static async get(): Promise<SequelizeConfig> {
+  public static get(): SequelizeConfig {
     if (!this.instance) {
-      const sequelize = await this.initSequelize();
+      const sequelize = this.initSequelize();
       this.instance = new SequelizeConfig(sequelize);
     }
     return this.instance;
   }
 
-  private static async initSequelize(): Promise<Sequelize> {
+  private static initSequelize(): Sequelize {
     const sequelize = new Sequelize({
       dialect: AppConfig.sequelize.dialect as SequelizeDialect,
       host: AppConfig.sequelize.host,
       username: AppConfig.sequelize.username,
       password: AppConfig.sequelize.password,
       database: AppConfig.sequelize.database,
+      logging: false,
     });
     return sequelize;
   }

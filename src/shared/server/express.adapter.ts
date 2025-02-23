@@ -12,6 +12,7 @@ export class ExpressAdapater implements ServerStrategy {
   constructor() {
     this.app = express();
     this.logger = LoggerConfig.get().logger;
+    this.registerMiddleware(express.json());
     this.start();
   }
 
@@ -49,9 +50,7 @@ export class ExpressAdapater implements ServerStrategy {
     this.logger.info(`Registering ${method.toUpperCase()} route ${path}`);
   }
 
-  registerMiddleware(): void {
-    console.log("Registering middlewares...");
-    this.logger.info("Registering middlewares...");
-    // Add routes and middleware here
+  registerMiddleware(middleware: any): void {
+    this.app.use(middleware);
   }
 }

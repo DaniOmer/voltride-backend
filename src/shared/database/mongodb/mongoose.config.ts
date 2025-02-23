@@ -18,7 +18,7 @@ export class MongooseConfig {
     return this.instance;
   }
 
-  private static async initMongoose(): Promise<Mongoose> {
+  private static initMongoose(): Promise<Mongoose> {
     const mongooseConnection = connect(AppConfig.mongoose.uri as string, {
       auth: {
         username: AppConfig.mongoose.options.auth.username,
