@@ -1,15 +1,22 @@
-import { User, IUserRepository } from "../../domain";
-import { UserCreateCommand } from "../commands/UserCreate.command";
 import { v4 as uuidv4 } from "uuid";
-import { SecurityUtils } from "../../../../shared";
+
+import { User, IUserRepository, UserCreatedEvent } from "../../domain";
+import { UserCreateCommand } from "../commands/UserCreate.command";
+import { SecurityUtils, BadRequestError, EventStore } from "../../../../shared";
 
 export class UserCreateHandler {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly eventStore: EventStore
+  ) {}
 
   async execute(command: UserCreateCommand): Promise<User> {
     const existingUser = await this.userRepository.findByEmail(command.email);
     if (existingUser) {
-      throw new Error("Email already exists");
+      throw new BadRequestError({
+        message: "Account with this email already exists",
+        logging: true,
+      });
     }
 
     const hashedPassword = await SecurityUtils.hashPassword(command.password);
@@ -23,10 +30,15 @@ export class UserCreateHandler {
       phoneNumber: command.phoneNumber,
       address: command.address,
     });
-    const createdUser = await this.userRepository.create(user);
 
-    // Par exemple, on pourrait publier un événement
-    // EventBus.publish(new UserCreatedEvent(createdUser));
+    const createdUser = await this.userRepository.create(user);
+    const payload = {
+      uid: createdUser.uid,
+      firstName: createdUser.firstName,
+      lastName: createdUser.lastName,
+      email: createdUser.email,
+    };
+    this.eventStore.publish(new UserCreatedEvent(payload));
 
     return createdUser;
   }

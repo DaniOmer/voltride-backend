@@ -1,32 +1,20 @@
-import { User } from "../../domain";
+import {
+  BaseRouter,
+  ServerStrategy,
+  ServerRequest,
+  ServerResponse,
+} from "../../../../shared";
 import { UserController } from "../controllers/user.controller";
-import { UserCreateHandler } from "../../application";
-import { PostgresUserRepository } from "../../data-access/repositories/postgres.repository";
 
-import { ServerStrategy } from "../../../../shared";
-import { BaseRouter, ServerRequest, ServerResponse } from "../../../../shared";
-
-class UserRouter implements BaseRouter {
-  private readonly createUserHandler: UserCreateHandler;
-  private readonly controller: UserController;
-  private readonly repository: PostgresUserRepository;
-
-  constructor() {
-    this.repository = new PostgresUserRepository();
-    this.createUserHandler = new UserCreateHandler(this.repository);
-    this.controller = new UserController(this.createUserHandler);
-  }
+export class UserRouter implements BaseRouter {
+  constructor(private readonly controller: UserController) {}
 
   registerRoutes(server: ServerStrategy): void {
     server.registerRoute(
       "post",
       "/api/users",
-      async (req: ServerRequest, res: ServerResponse) => {
-        await this.controller.createUser.bind(this.controller)(req, res);
-      }
+      (req: ServerRequest, res: ServerResponse) =>
+        this.controller.createUser(req, res)
     );
   }
 }
-
-const userRouter = new UserRouter();
-export { userRouter };
