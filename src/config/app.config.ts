@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-import { Sequelize } from "sequelize";
 
 dotenv.config();
 
@@ -32,5 +31,12 @@ export const AppConfig = {
   },
   token: {
     defaultExpiresIn: process.env.TOKEN_DEFAULT_EXPIRATION || 86400,
+  },
+  notification: {
+    email: {
+      brevoApiKey: process.env.BREVO_API_KEY,
+      fromEmail: process.env.BREVO_FROM_EMAIL,
+      fromName: process.env.BREVO_FROM_NAME,
+    },
   },
 };
