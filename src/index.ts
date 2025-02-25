@@ -9,6 +9,7 @@ import {
 } from "./shared/infrastructure";
 import { composeUserModule } from "./modules/users/infrastructure";
 import { composeTokenModule } from "./modules/tokens/infrastructure";
+import { composeScooterModule } from "./modules/scooters/infrastructure";
 
 async function startApp() {
   try {
@@ -27,7 +28,7 @@ async function startApp() {
     const app = ServerFactory.create(AppConfig.server.name as ServerAdapter);
 
     // Event Store
-    const eventStore = new EventStore();
+    const eventStore = EventStore.getInstance();
 
     // Register token module
     const tokenModule = composeTokenModule(app, eventStore);
@@ -38,6 +39,10 @@ async function startApp() {
       eventStore,
       tokenModule.tokenValidateHandler
     );
+
+    // Register scooter module
+    const scooterModule = composeScooterModule(app, eventStore);
+    console.log("Scooter module initialized");
   } catch (error) {
     console.error("Error starting the app", error);
     process.exit(1);
