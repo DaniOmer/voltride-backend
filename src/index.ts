@@ -5,7 +5,9 @@ import {
   ServerFactory,
   ServerAdapter,
 } from "./shared";
-import { initUserRouter } from "./modules/users/composition";
+import { composeUserModule } from "./modules/users/infrastructure";
+import { composeTokenModule } from "./modules/tokens/infrastructure";
+import { EventStore } from "./shared";
 
 async function startApp() {
   try {
@@ -23,9 +25,14 @@ async function startApp() {
     // Initialize server
     const app = ServerFactory.create(AppConfig.server.name as ServerAdapter);
 
-    // Register user routes
-    const userRouter = initUserRouter();
-    userRouter.registerRoutes(app);
+    // Event Store
+    const eventStore = new EventStore();
+
+    // Register user module
+    const userModule = composeUserModule(app, eventStore);
+
+    // Register token module
+    const tokenModule = composeTokenModule(app, eventStore);
   } catch (error) {
     console.error("Error starting the app", error);
     process.exit(1);

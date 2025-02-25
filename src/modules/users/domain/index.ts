@@ -1,5 +1,5 @@
 // Entities
-export * from "./entities/user.entity";
+export * from "./entity/user.entity";
 
 // Repositories
 export * from "./repository/user.repository";

@@ -7,6 +7,7 @@ export interface IDomainEvent<TPayload = any> {
 }
 
 export interface IEventStore {
+  events: IDomainEvent[];
   publish(event: IDomainEvent): void;
   subscribe(eventName: string, handler: (event: IDomainEvent) => void): void;
 }

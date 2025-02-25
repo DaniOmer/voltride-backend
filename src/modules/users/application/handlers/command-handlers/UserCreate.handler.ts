@@ -1,13 +1,17 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { User, IUserRepository, UserCreatedEvent } from "../../domain";
-import { UserCreateCommand } from "../commands/UserCreate.command";
-import { SecurityUtils, BadRequestError, EventStore } from "../../../../shared";
+import { User, IUserRepository, UserCreatedEvent } from "../../../domain";
+import { UserCreateCommand } from "../../commands/UserCreate.command";
+import {
+  SecurityUtils,
+  BadRequestError,
+  IEventStore,
+} from "../../../../../shared";
 
 export class UserCreateHandler {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly eventStore: EventStore
+    private readonly eventStore: IEventStore
   ) {}
 
   async execute(command: UserCreateCommand): Promise<User> {

@@ -2,10 +2,8 @@
 export * from "./commands/UserCreate.command";
 
 // Handlers
-export * from "./handlers/UserCreate.handler";
+export * from "./handlers/command-handlers/UserCreate.handler";
+export * from "./handlers/events-handlers/SendWelcomeEmail.handler";
 
 // Listeners
-export * from "./listeners/UserCreated.listener";
-
-// Events handlers
-export * from "./handlers/events-handlers/SendWelcomeEmail.handler";
+export * from "./listeners/TokenCreated.listener";
