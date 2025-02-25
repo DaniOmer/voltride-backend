@@ -5,6 +5,7 @@ import {
   UserCreatedListener,
   TokenCreateHandler,
   CreateConfirmationTokenHandler,
+  TokenValidateHandler,
 } from "../../application";
 
 export function composeTokenModule(
@@ -13,8 +14,13 @@ export function composeTokenModule(
 ) {
   const tokenRepository = new PostgresTokenRepository();
 
-  // Event Handlers
+  // Command Handlers
   const tokenCreateHandler = new TokenCreateHandler(
+    eventStore,
+    tokenRepository
+  );
+
+  const tokenValidateHandler = new TokenValidateHandler(
     eventStore,
     tokenRepository
   );
@@ -27,4 +33,8 @@ export function composeTokenModule(
     createTokenConfirmationHandler.handle(event)
   );
   userCreatedListener.listen();
+
+  return {
+    tokenValidateHandler,
+  };
 }

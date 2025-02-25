@@ -6,3 +6,7 @@ export interface UserCreateDTO {
   phoneNumber?: string;
   address?: string;
 }
+
+export interface EmailValidationDTO {
+  token: string;
+}

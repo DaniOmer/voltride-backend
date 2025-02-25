@@ -56,6 +56,13 @@ export class UserModel extends Model<UserCreationAttributes> {
     allowNull: true,
   })
   address?: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  })
+  isEmailVerified!: boolean;
 }
 
 sequelize.addModels([UserModel]);

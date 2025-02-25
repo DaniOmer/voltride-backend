@@ -12,6 +12,7 @@ export class PostgresUserRepository implements IUserRepository {
       password: user.password,
       phoneNumber: user.phoneNumber,
       address: user.address,
+      isEmailVerified: user.isEmailVerified,
     });
     return user;
   }
@@ -27,13 +28,14 @@ export class PostgresUserRepository implements IUserRepository {
         password: userModel.password,
         phoneNumber: userModel.phoneNumber,
         address: userModel.address,
+        isEmailVerified: userModel.isEmailVerified,
         createdAt: userModel.createdAt,
         updatedAt: userModel.updatedAt,
       });
     });
   }
 
-  async findById(id: string): Promise<User | null> {
+  async findById(id: number): Promise<User | null> {
     const userModel = await UserModel.findByPk(id);
     if (!userModel) return null;
     return new User({
@@ -44,6 +46,24 @@ export class PostgresUserRepository implements IUserRepository {
       password: userModel.password,
       phoneNumber: userModel.phoneNumber,
       address: userModel.address,
+      isEmailVerified: userModel.isEmailVerified,
+      createdAt: userModel.createdAt,
+      updatedAt: userModel.updatedAt,
+    });
+  }
+
+  async findByUid(uid: string): Promise<User | null> {
+    const userModel = await UserModel.findOne({ where: { uid } });
+    if (!userModel) return null;
+    return new User({
+      uid: userModel.uid,
+      firstName: userModel.firstName,
+      lastName: userModel.lastName,
+      email: userModel.email,
+      password: userModel.password,
+      phoneNumber: userModel.phoneNumber,
+      address: userModel.address,
+      isEmailVerified: userModel.isEmailVerified,
       createdAt: userModel.createdAt,
       updatedAt: userModel.updatedAt,
     });
@@ -60,6 +80,7 @@ export class PostgresUserRepository implements IUserRepository {
       password: userModel.password,
       phoneNumber: userModel.phoneNumber,
       address: userModel.address,
+      isEmailVerified: userModel.isEmailVerified,
       createdAt: userModel.createdAt,
       updatedAt: userModel.updatedAt,
     });
@@ -74,8 +95,9 @@ export class PostgresUserRepository implements IUserRepository {
         password: user.password,
         phoneNumber: user.phoneNumber,
         address: user.address,
+        isEmailVerified: user.isEmailVerified,
       },
-      { where: { id: user.id } }
+      { where: { uid: user.uid } }
     );
     return user;
   }

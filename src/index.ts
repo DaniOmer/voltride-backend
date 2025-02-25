@@ -29,11 +29,15 @@ async function startApp() {
     // Event Store
     const eventStore = new EventStore();
 
-    // Register user module
-    const userModule = composeUserModule(app, eventStore);
-
     // Register token module
     const tokenModule = composeTokenModule(app, eventStore);
+
+    // Register user module with token validate handler
+    const userModule = composeUserModule(
+      app,
+      eventStore,
+      tokenModule.tokenValidateHandler
+    );
   } catch (error) {
     console.error("Error starting the app", error);
     process.exit(1);

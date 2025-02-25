@@ -14,7 +14,6 @@ export class EmailNotification implements NotificationStrategy {
   readonly mailer: BrevoMailer;
 
   constructor() {
-    console.log(AppConfig.notification.email.brevoApiKey);
     this.mailer = new BrevoMailer(
       AppConfig.notification.email.brevoApiKey as string
     );

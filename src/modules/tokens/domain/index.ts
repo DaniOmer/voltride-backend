@@ -6,3 +6,4 @@ export * from "./repository/token.repository";
 
 // Events
 export * from "./event/TokenCreated.event";
+export * from "./event/TokenValidated.event";

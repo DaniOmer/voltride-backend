@@ -28,6 +28,10 @@ export class PostgresTokenRepository implements ITokenRepository {
     return await TokenModel.findOne({ where: { userUid } });
   }
 
+  async findByHash(hash: string): Promise<IToken | null> {
+    return await TokenModel.findOne({ where: { hash } });
+  }
+
   async update(token: Token): Promise<IToken> {
     const tokenData = {
       uid: token.uid,

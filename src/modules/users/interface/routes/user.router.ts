@@ -16,5 +16,12 @@ export class UserRouter implements BaseRouter {
       (req: ServerRequest, res: ServerResponse) =>
         this.controller.createUser(req, res)
     );
+
+    server.registerRoute(
+      "post",
+      "/api/users/validate-email",
+      (req: ServerRequest, res: ServerResponse) =>
+        this.controller.validateEmail(req, res)
+    );
   }
 }
