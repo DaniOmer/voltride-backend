@@ -1,7 +1,7 @@
-import { NotificationStrategy } from "./notification.strategy";
+import { NotificationStrategy } from "../../application/services/notification.strategy";
 import { EmailNotification } from "./notification.email";
 import { SMSNotification } from "./notification.sms";
-import { BadRequestError } from "../error/BadRequest.error";
+import { BadRequestError } from "../../domain";
 
 export class NotificationFactory {
   static create(strategy: string): NotificationStrategy {

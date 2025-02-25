@@ -2,7 +2,7 @@ import { Optional } from "sequelize";
 import { Table, Model, Column, DataType } from "sequelize-typescript";
 
 import { IUser } from "../../domain";
-import { SequelizeConfig } from "../../../../shared";
+import { SequelizeConfig } from "../../../../shared/infrastructure";
 
 const sequelize = SequelizeConfig.get().sequelize;
 

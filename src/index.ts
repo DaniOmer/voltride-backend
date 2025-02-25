@@ -1,13 +1,14 @@
 import { AppConfig } from "./config/app.config";
+
 import {
   SequelizeConfig,
   MongooseConfig,
   ServerFactory,
   ServerAdapter,
-} from "./shared";
+  EventStore,
+} from "./shared/infrastructure";
 import { composeUserModule } from "./modules/users/infrastructure";
 import { composeTokenModule } from "./modules/tokens/infrastructure";
-import { EventStore } from "./shared";
 
 async function startApp() {
   try {

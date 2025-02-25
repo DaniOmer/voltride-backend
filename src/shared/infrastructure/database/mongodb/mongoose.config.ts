@@ -1,6 +1,6 @@
 import { Mongoose, connect } from "mongoose";
 
-import { AppConfig } from "../../../config/app.config";
+import { AppConfig } from "../../../../config/app.config";
 
 export class MongooseConfig {
   private static instance?: MongooseConfig;

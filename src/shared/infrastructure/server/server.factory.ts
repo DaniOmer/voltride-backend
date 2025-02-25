@@ -1,7 +1,7 @@
 import { ServerStrategy } from "./server.strategy";
 import { ExpressAdapater } from "./express.adapter";
 import { FastifyAdapter } from "./fastify.adapter";
-
+import { BadRequestError } from "../../domain/error/BadRequest.error";
 export type ServerAdapter = "express" | "fastify";
 
 export class ServerFactory {
@@ -12,7 +12,10 @@ export class ServerFactory {
       case "fastify":
         return new FastifyAdapter();
       default:
-        throw new Error("Invalid server adapter");
+        throw new BadRequestError({
+          message: "Invalid server adapter",
+          logging: true,
+        });
     }
   }
 }

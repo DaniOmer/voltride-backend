@@ -1,6 +1,10 @@
 import { UserCreateDTO } from "../dtos/userCreate.dto";
 import { UserCreateCommand, UserCreateHandler } from "../../application";
-import { ServerRequest, ServerResponse, ApiResponse } from "../../../../shared";
+import {
+  ServerRequest,
+  ServerResponse,
+  ApiResponse,
+} from "../../../../shared/infrastructure";
 
 export class UserController {
   constructor(private readonly createUserHandler: UserCreateHandler) {}

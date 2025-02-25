@@ -1,8 +1,8 @@
 import {
-  IEventStore,
   NotificationFactory,
   ServerStrategy,
-} from "../../../../shared";
+} from "../../../../shared/infrastructure";
+import { IEventStore } from "../../../../shared/domain";
 import { PostgresUserRepository } from "../repositories/postgres.user.repository";
 import {
   UserCreateHandler,

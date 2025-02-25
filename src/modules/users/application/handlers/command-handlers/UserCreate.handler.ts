@@ -1,12 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { User, IUserRepository, UserCreatedEvent } from "../../../domain";
-import { UserCreateCommand } from "../../commands/UserCreate.command";
-import {
-  SecurityUtils,
-  BadRequestError,
-  IEventStore,
-} from "../../../../../shared";
+import { User, UserCreatedEvent, UserCreateCommand } from "../../../domain";
+import { IUserRepository } from "../../repository/user.repository";
+
+import { SecurityUtils } from "../../../../../shared";
+import { IEventStore } from "../../../../../shared/domain";
+import { BadRequestError } from "../../../../../shared/domain";
 
 export class UserCreateHandler {
   constructor(

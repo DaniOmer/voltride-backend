@@ -1,4 +1,5 @@
-import { User, IUserRepository } from "../../domain";
+import { User } from "../../domain";
+import { IUserRepository } from "../../application/repository/user.repository";
 import { UserModel } from "../models/user.model";
 
 export class PostgresUserRepository implements IUserRepository {

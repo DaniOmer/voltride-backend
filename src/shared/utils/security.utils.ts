@@ -2,7 +2,7 @@ import crypto from "crypto";
 import * as bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { AppConfig } from "../../config/app.config";
-import { BadRequestError } from "../error/BadRequest.error";
+import { BadRequestError } from "../domain/error/BadRequest.error";
 
 export type UserDataToJWT = {
   _id: string;

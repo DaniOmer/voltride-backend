@@ -1,4 +1,8 @@
-import { IEventStore, IDomainEvent, IEventListener } from "../../../../shared";
+import {
+  IEventStore,
+  IDomainEvent,
+  IEventListener,
+} from "../../../../shared/domain";
 
 export class TokenCreatedListener implements IEventListener {
   constructor(

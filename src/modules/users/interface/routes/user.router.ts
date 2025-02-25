@@ -3,7 +3,7 @@ import {
   ServerStrategy,
   ServerRequest,
   ServerResponse,
-} from "../../../../shared";
+} from "../../../../shared/infrastructure";
 import { UserController } from "../controllers/user.controller";
 
 export class UserRouter implements BaseRouter {

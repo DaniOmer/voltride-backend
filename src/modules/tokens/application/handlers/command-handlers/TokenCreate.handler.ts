@@ -1,4 +1,4 @@
-import { IEventStore } from "../../../../../shared";
+import { IEventStore, BadRequestError } from "../../../../../shared/domain";
 import {
   IToken,
   Token,
@@ -16,11 +16,17 @@ export class TokenCreateHandler {
   async handle(command: TokenCreateCommand): Promise<IToken> {
     try {
       if (!command.userUid) {
-        throw new Error("User ID is required to create a token");
+        throw new BadRequestError({
+          message: "User ID is required",
+          logging: true,
+        });
       }
 
       if (!command.type) {
-        throw new Error("Token type is required");
+        throw new BadRequestError({
+          message: "Token type is required",
+          logging: true,
+        });
       }
 
       const token = await Token.create(

@@ -1,4 +1,4 @@
-import { IDomainEvent } from "../../../../shared";
+import { IDomainEvent } from "../../../../shared/domain";
 
 export interface UserCreatedPayload {
   uid: string;

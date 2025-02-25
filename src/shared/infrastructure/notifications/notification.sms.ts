@@ -1,4 +1,4 @@
-import { NotificationStrategy } from "./notification.strategy";
+import { NotificationStrategy } from "../../application/services/notification.strategy";
 
 export class SMSNotification implements NotificationStrategy {
   prepare(data: any): object {

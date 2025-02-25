@@ -1,4 +1,4 @@
-import { IDomainEvent } from "../../../../shared";
+import { IDomainEvent } from "../../../../shared/domain";
 import { TokenType } from "../entity/token.entity";
 
 export interface TokenCreatedPayload {

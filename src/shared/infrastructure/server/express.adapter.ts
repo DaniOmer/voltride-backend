@@ -1,9 +1,9 @@
 import { Logger } from "winston";
 import express, { Express, Request, Response, NextFunction } from "express";
 
-import { AppConfig } from "../../config/app.config";
-import { ServerStrategy, HttpMethod } from "./server.strategy";
+import { AppConfig } from "../../../config/app.config";
 import { LoggerConfig } from "../logger/winston.logger";
+import { ServerStrategy, HttpMethod } from "./server.strategy";
 
 export class ExpressAdapater implements ServerStrategy {
   readonly app: Express;

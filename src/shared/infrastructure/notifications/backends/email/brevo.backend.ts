@@ -1,6 +1,6 @@
 import * as Brevo from "@getbrevo/brevo";
 import { Logger } from "winston";
-import { AppConfig } from "../../../../config/app.config";
+import { AppConfig } from "../../../../../config/app.config";
 import { LoggerConfig } from "../../../logger/winston.logger";
 
 export class BrevoMailer {

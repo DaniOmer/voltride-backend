@@ -1,4 +1,5 @@
-import { IEventStore, ServerStrategy } from "../../../../shared";
+import { IEventStore } from "../../../../shared/domain";
+import { ServerStrategy } from "../../../../shared/infrastructure";
 import { PostgresTokenRepository } from "../repositories/postgres.token.repository";
 import {
   UserCreatedListener,

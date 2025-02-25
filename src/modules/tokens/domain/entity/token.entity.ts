@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { SecurityUtils, BadRequestError } from "../../../../shared";
+import { SecurityUtils } from "../../../../shared";
+import { BadRequestError } from "../../../../shared/domain";
 
 export enum TokenType {
   Confirmation = "confirmation",

@@ -7,7 +7,7 @@ import fastify, {
 
 import { ServerStrategy, HttpMethod } from "./server.strategy";
 import { LoggerConfig } from "../logger/winston.logger";
-import { AppConfig } from "../../config/app.config";
+import { AppConfig } from "../../../config/app.config";
 
 export class FastifyAdapter implements ServerStrategy {
   readonly logger: Logger;

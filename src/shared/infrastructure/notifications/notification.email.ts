@@ -1,7 +1,7 @@
-import { AppConfig } from "../../config/app.config";
-import { NotificationStrategy } from "./notification.strategy";
+import { AppConfig } from "../../../config/app.config";
+import { NotificationStrategy } from "../../application/services/notification.strategy";
 import { BrevoMailer } from "./backends/email/brevo.backend";
-import { HelperUtils } from "../utils/helper.utils";
+import { HelperUtils } from "../../utils/helper.utils";
 
 export type MailerDataType = {
   recipient: string;

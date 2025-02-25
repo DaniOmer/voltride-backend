@@ -1,5 +1,5 @@
-import { IDomainEvent, BadRequestError } from "../../../../../shared";
 import { TokenType } from "../../../domain";
+import { IDomainEvent, BadRequestError } from "../../../../../shared/domain";
 import { TokenCreateCommand } from "../../commands/TokenCreate.command";
 import { TokenCreateHandler } from "../command-handlers/TokenCreate.handler";
 import { UserCreatedEventPayload } from "../../listeners/UserCreated.listener";
