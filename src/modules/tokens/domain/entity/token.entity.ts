@@ -19,6 +19,7 @@ export interface IToken {
   id?: number;
   uid: string;
   userUid: string;
+  email: string;
   hash: string;
   type: TokenType;
   status: TokenStatus;
@@ -36,6 +37,7 @@ export class Token {
 
   public static async create(
     userUid: string,
+    email: string,
     type: TokenType,
     expiresIn: number
   ): Promise<Token> {
@@ -49,6 +51,7 @@ export class Token {
     return new Token({
       uid,
       userUid,
+      email,
       hash,
       type,
       status: TokenStatus.Pending,
@@ -66,6 +69,10 @@ export class Token {
 
   get userUid() {
     return this.props.userUid;
+  }
+
+  get email() {
+    return this.props.email;
   }
 
   get hash() {

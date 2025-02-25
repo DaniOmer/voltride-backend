@@ -39,4 +39,7 @@ export const AppConfig = {
       fromName: process.env.BREVO_FROM_NAME,
     },
   },
+  client: {
+    url: process.env.CLIENT_URL,
+  },
 };

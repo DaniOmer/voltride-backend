@@ -11,7 +11,6 @@ export * from "./database/mongodb/mongoose.config";
 
 // Notifications
 export * from "./notifications/notification.factory";
-export * from "../application/services/notification.strategy";
 export * from "./notifications/notification.email";
 export * from "./notifications/notification.sms";
 

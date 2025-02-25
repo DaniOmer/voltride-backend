@@ -26,9 +26,8 @@ export function composeUserModule(
   );
 
   // Event Listeners
-  const tokenCreatedListener = new TokenCreatedListener(
-    eventStore,
-    sendWelcomeHandler.handle
+  const tokenCreatedListener = new TokenCreatedListener(eventStore, (event) =>
+    sendWelcomeHandler.handle(event)
   );
   tokenCreatedListener.listen();
 

@@ -19,6 +19,7 @@ export class CreateConfirmationTokenHandler {
 
       const command = new TokenCreateCommand(
         event.payload.uid,
+        event.payload.email,
         TokenType.Confirmation
       );
 

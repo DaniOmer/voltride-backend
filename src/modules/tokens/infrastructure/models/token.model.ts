@@ -31,6 +31,12 @@ export class TokenModel extends Model<TokenCreationAttributes> {
     type: DataType.STRING,
     allowNull: false,
   })
+  email!: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
   hash!: string;
 
   @Column({

@@ -3,6 +3,7 @@ import { TokenType } from "../entity/token.entity";
 
 export interface TokenCreatedPayload {
   uid: string;
+  email: string;
   hash: string;
   type: TokenType;
 }

@@ -5,6 +5,7 @@ export class PostgresTokenRepository implements ITokenRepository {
   async create(token: Token): Promise<IToken> {
     const tokenData = {
       uid: token.uid,
+      email: token.email,
       userUid: token.userUid,
       hash: token.hash,
       type: token.type,

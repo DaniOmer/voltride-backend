@@ -42,6 +42,7 @@ export class BrevoMailer {
         );
       },
       (error) => {
+        console.log(error);
         this.logger.error(
           `Error calling Brevo API: ${error} ${JSON.stringify(apiInstance)}}`
         );

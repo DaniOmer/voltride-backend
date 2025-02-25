@@ -31,6 +31,7 @@ export class TokenCreateHandler {
 
       const token = await Token.create(
         command.userUid,
+        command.email,
         command.type,
         command.expiresIn
       );
