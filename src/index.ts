@@ -22,7 +22,8 @@ async function startApp() {
 
     // Initialize postgres database
     const sequelize = SequelizeConfig.get().sequelize;
-    sequelize.authenticate();
+    await sequelize.authenticate();
+    await sequelize.sync({ alter: false, force: false });
 
     // Initialize server
     const app = ServerFactory.create(AppConfig.server.name as ServerAdapter);
@@ -42,7 +43,11 @@ async function startApp() {
 
     // Register scooter module
     const scooterModule = composeScooterModule(app, eventStore);
-    console.log("Scooter module initialized");
+
+    // Server is ready
+    console.log(
+      `${AppConfig.server.name} Server is ready and listening on port ${AppConfig.server.port}`
+    );
   } catch (error) {
     console.error("Error starting the app", error);
     process.exit(1);
