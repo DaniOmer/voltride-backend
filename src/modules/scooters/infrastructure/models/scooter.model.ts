@@ -13,6 +13,13 @@ interface ScooterCreationAttributes
   tableName: "scooters",
   underscored: true,
   timestamps: true,
+  // Force sync to create missing columns
+  hooks: {
+    beforeSync: (options) => {
+      options.force = false;
+      options.alter = true;
+    },
+  },
 })
 export class ScooterModel extends Model<IScooter, ScooterCreationAttributes> {
   @Column({

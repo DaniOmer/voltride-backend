@@ -1,5 +1,6 @@
 import { Logger } from "winston";
 import express, { Express, Request, Response, NextFunction } from "express";
+import cors from "cors";
 
 import { AppConfig } from "../../../config/app.config";
 import { LoggerConfig } from "../logger/winston.logger";
@@ -12,7 +13,20 @@ export class ExpressAdapater implements ServerStrategy {
   constructor() {
     this.app = express();
     this.logger = LoggerConfig.get().logger;
+
+    // Register middleware
     this.registerMiddleware(express.json());
+
+    // Configure CORS
+    this.registerMiddleware(
+      cors({
+        origin: AppConfig.client.url || true,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        credentials: true,
+        allowedHeaders: ["Content-Type", "Authorization"],
+      })
+    );
+
     this.start();
   }
 

@@ -42,6 +42,14 @@ export class ScooterModelRouter implements BaseRouter {
         this.controller.getScooterModelByUid(req, res)
     );
 
+    // Get scooter models by manufacturer
+    server.registerRoute(
+      "get",
+      "/api/scooter-models/manufacturer/:manufacturer",
+      (req: ServerRequest, res: ServerResponse) =>
+        this.controller.getScooterModelsByManufacturer(req, res)
+    );
+
     // Update scooter model
     server.registerRoute(
       "put",

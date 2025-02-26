@@ -21,6 +21,19 @@ import {
   ReportFaultHandler,
   ResolveFaultHandler,
   FaultTrackingService,
+  DeleteScooterHandler,
+  GetAllScootersHandler,
+  GetScooterByIdHandler,
+  GetScooterByUidHandler,
+  GetScootersByModelHandler,
+  GetScootersByStatusHandler,
+  CreateScooterModelHandler,
+  UpdateScooterModelHandler,
+  DeleteScooterModelHandler,
+  GetAllScooterModelsHandler,
+  GetScooterModelByIdHandler,
+  GetScooterModelByUidHandler,
+  GetScooterModelsByManufacturerHandler,
 } from "../../application";
 import { MaintenanceController } from "../../interface/controllers/maintenance.controller";
 import { MaintenanceRouter } from "../../interface/routes/maintenance.router";
@@ -101,6 +114,52 @@ export function composeScooterModule(
     eventStore
   );
 
+  const deleteScooterHandler = new DeleteScooterHandler(scooterRepository);
+
+  // Query Handlers - Scooter
+  const getAllScootersHandler = new GetAllScootersHandler(scooterRepository);
+
+  const getScooterByIdHandler = new GetScooterByIdHandler(scooterRepository);
+
+  const getScooterByUidHandler = new GetScooterByUidHandler(scooterRepository);
+
+  const getScootersByModelHandler = new GetScootersByModelHandler(
+    scooterRepository
+  );
+
+  const getScootersByStatusHandler = new GetScootersByStatusHandler(
+    scooterRepository
+  );
+
+  // Command Handlers - ScooterModel
+  const createScooterModelHandler = new CreateScooterModelHandler(
+    scooterModelRepository
+  );
+
+  const updateScooterModelHandler = new UpdateScooterModelHandler(
+    scooterModelRepository
+  );
+
+  const deleteScooterModelHandler = new DeleteScooterModelHandler(
+    scooterModelRepository
+  );
+
+  // Query Handlers - ScooterModel
+  const getAllScooterModelsHandler = new GetAllScooterModelsHandler(
+    scooterModelRepository
+  );
+
+  const getScooterModelByIdHandler = new GetScooterModelByIdHandler(
+    scooterModelRepository
+  );
+
+  const getScooterModelByUidHandler = new GetScooterModelByUidHandler(
+    scooterModelRepository
+  );
+
+  const getScooterModelsByManufacturerHandler =
+    new GetScooterModelsByManufacturerHandler(scooterModelRepository);
+
   // Command Handlers - Fault
   const reportFaultHandler = new ReportFaultHandler(
     scooterRepository,
@@ -140,7 +199,13 @@ export function composeScooterModule(
     updateScooterHandler,
     updateScooterStatusHandler,
     updateScooterBatteryHandler,
-    updateScooterMileageHandler
+    updateScooterMileageHandler,
+    deleteScooterHandler,
+    getAllScootersHandler,
+    getScooterByIdHandler,
+    getScooterByUidHandler,
+    getScootersByModelHandler,
+    getScootersByStatusHandler
   );
 
   const faultController = new FaultController(
@@ -149,7 +214,13 @@ export function composeScooterModule(
   );
 
   const scooterModelController = new ScooterModelController(
-    scooterModelRepository
+    createScooterModelHandler,
+    updateScooterModelHandler,
+    deleteScooterModelHandler,
+    getAllScooterModelsHandler,
+    getScooterModelByIdHandler,
+    getScooterModelByUidHandler,
+    getScooterModelsByManufacturerHandler
   );
 
   // Routers

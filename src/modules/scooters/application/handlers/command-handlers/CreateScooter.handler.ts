@@ -11,7 +11,12 @@ export class CreateScooterHandler {
 
   async execute(
     command: CreateScooterCommand
-  ): Promise<{ success: boolean; message: string; scooterId?: number }> {
+  ): Promise<{
+    success: boolean;
+    message: string;
+    scooterId?: number;
+    scooter?: Scooter;
+  }> {
     try {
       const {
         serialNumber,
@@ -58,6 +63,7 @@ export class CreateScooterHandler {
         success: true,
         message: "Scooter created successfully",
         scooterId: createdScooter.id,
+        scooter: createdScooter,
       };
     } catch (error: any) {
       return {

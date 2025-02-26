@@ -29,3 +29,18 @@ export * from "./commands/UpdateScooterStatus.command";
 export * from "./commands/UpdateScooterBattery.command";
 export * from "./commands/UpdateScooterMileage.command";
 export * from "./commands/DefineMaintenanceSchedule.command";
+export * from "./commands/DeleteScooter.command";
+export * from "./commands/CreateScooterModel.command";
+export * from "./commands/UpdateScooterModel.command";
+export * from "./commands/DeleteScooterModel.command";
+
+// Queries
+export * from "./queries/GetAllScooters.query";
+export * from "./queries/GetScooterById.query";
+export * from "./queries/GetScooterByUid.query";
+export * from "./queries/GetScootersByModel.query";
+export * from "./queries/GetScootersByStatus.query";
+export * from "./queries/GetAllScooterModels.query";
+export * from "./queries/GetScooterModelById.query";
+export * from "./queries/GetScooterModelByUid.query";
+export * from "./queries/GetScooterModelsByManufacturer.query";

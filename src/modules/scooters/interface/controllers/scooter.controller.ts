@@ -11,6 +11,13 @@ import {
   UpdateScooterStatusCommand,
   UpdateScooterBatteryCommand,
   UpdateScooterMileageCommand,
+  DeleteScooterCommand,
+  GetAllScootersQuery,
+  GetScooterByIdQuery,
+  GetScooterByUidQuery,
+  GetScootersByModelQuery,
+  GetScootersByStatusQuery,
+  IScooterRepository,
 } from "../../domain";
 import {
   CreateScooterHandler,
@@ -18,6 +25,12 @@ import {
   UpdateScooterStatusHandler,
   UpdateScooterBatteryHandler,
   UpdateScooterMileageHandler,
+  DeleteScooterHandler,
+  GetAllScootersHandler,
+  GetScooterByIdHandler,
+  GetScooterByUidHandler,
+  GetScootersByModelHandler,
+  GetScootersByStatusHandler,
 } from "../../application";
 import {
   ServerRequest,
@@ -31,7 +44,13 @@ export class ScooterController {
     private readonly updateScooterHandler: UpdateScooterHandler,
     private readonly updateScooterStatusHandler: UpdateScooterStatusHandler,
     private readonly updateScooterBatteryHandler: UpdateScooterBatteryHandler,
-    private readonly updateScooterMileageHandler: UpdateScooterMileageHandler
+    private readonly updateScooterMileageHandler: UpdateScooterMileageHandler,
+    private readonly deleteScooterHandler: DeleteScooterHandler,
+    private readonly getAllScootersHandler: GetAllScootersHandler,
+    private readonly getScooterByIdHandler: GetScooterByIdHandler,
+    private readonly getScooterByUidHandler: GetScooterByUidHandler,
+    private readonly getScootersByModelHandler: GetScootersByModelHandler,
+    private readonly getScootersByStatusHandler: GetScootersByStatusHandler
   ) {}
 
   async createScooter(req: ServerRequest, res: ServerResponse): Promise<void> {
@@ -55,6 +74,7 @@ export class ScooterController {
       if (result.success) {
         ApiResponse.success(res, result.message, {
           scooterId: result.scooterId,
+          scooter: result.scooter,
         });
       } else {
         ApiResponse.error(res, result.message, 400);
@@ -164,46 +184,117 @@ export class ScooterController {
   }
 
   async getAllScooters(req: ServerRequest, res: ServerResponse): Promise<void> {
-    // Implementation for getting all scooters
-    ApiResponse.success(res, "Get all scooters endpoint");
+    try {
+      const query = new GetAllScootersQuery();
+      const result = await this.getAllScootersHandler.execute(query);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, { scooters: result.scooters });
+      } else {
+        ApiResponse.error(res, result.message, 400);
+      }
+    } catch (error: any) {
+      ApiResponse.error(res, error.message, 500);
+    }
   }
 
   async getScooterById(req: ServerRequest, res: ServerResponse): Promise<void> {
-    // Implementation for getting scooter by ID
-    const id = parseInt((req.params as any).id);
-    ApiResponse.success(res, `Get scooter by ID: ${id} endpoint`);
+    try {
+      const id = parseInt((req.params as any).id);
+      const query = new GetScooterByIdQuery({ id });
+
+      const result = await this.getScooterByIdHandler.execute(query);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, { scooter: result.scooter });
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
+    } catch (error: any) {
+      ApiResponse.error(res, error.message, 500);
+    }
   }
 
   async getScooterByUid(
     req: ServerRequest,
     res: ServerResponse
   ): Promise<void> {
-    // Implementation for getting scooter by UID
-    const uid = (req.params as any).uid;
-    ApiResponse.success(res, `Get scooter by UID: ${uid} endpoint`);
+    try {
+      const uid = (req.params as any).uid;
+      const query = new GetScooterByUidQuery({ uid });
+
+      const result = await this.getScooterByUidHandler.execute(query);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, { scooter: result.scooter });
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
+    } catch (error: any) {
+      ApiResponse.error(res, error.message, 500);
+    }
   }
 
   async getScootersByModel(
     req: ServerRequest,
     res: ServerResponse
   ): Promise<void> {
-    // Implementation for getting scooters by model
-    const modelId = parseInt((req.params as any).modelId);
-    ApiResponse.success(res, `Get scooters by model ID: ${modelId} endpoint`);
+    try {
+      const modelId = parseInt((req.params as any).modelId);
+      const query = new GetScootersByModelQuery({ modelId });
+
+      const result = await this.getScootersByModelHandler.execute(query);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, {
+          count: result.scooters?.length || 0,
+          scooters: result.scooters,
+        });
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
+    } catch (error: any) {
+      ApiResponse.error(res, error.message, 500);
+    }
   }
 
   async getScootersByStatus(
     req: ServerRequest,
     res: ServerResponse
   ): Promise<void> {
-    // Implementation for getting scooters by status
-    const status = (req.params as any).status;
-    ApiResponse.success(res, `Get scooters by status: ${status} endpoint`);
+    try {
+      const status = (req.params as any).status;
+      const query = new GetScootersByStatusQuery({ status });
+
+      const result = await this.getScootersByStatusHandler.execute(query);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, {
+          count: result.scooters?.length || 0,
+          scooters: result.scooters,
+        });
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
+    } catch (error: any) {
+      ApiResponse.error(res, error.message, 500);
+    }
   }
 
   async deleteScooter(req: ServerRequest, res: ServerResponse): Promise<void> {
-    // Implementation for deleting a scooter
-    const id = parseInt((req.params as any).id);
-    ApiResponse.success(res, `Delete scooter with ID: ${id} endpoint`);
+    try {
+      const id = parseInt((req.params as any).id);
+      const command = new DeleteScooterCommand({ id });
+
+      const result = await this.deleteScooterHandler.execute(command);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message);
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
+    } catch (error: any) {
+      ApiResponse.error(res, error.message, 500);
+    }
   }
 }

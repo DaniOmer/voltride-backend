@@ -4,6 +4,7 @@ import fastify, {
   FastifyReply,
   FastifyRequest,
 } from "fastify";
+import cors from "@fastify/cors";
 
 import { ServerStrategy, HttpMethod } from "./server.strategy";
 import { LoggerConfig } from "../logger/winston.logger";
@@ -16,6 +17,15 @@ export class FastifyAdapter implements ServerStrategy {
   constructor() {
     this.app = fastify();
     this.logger = LoggerConfig.get().logger;
+
+    // Register CORS middleware
+    this.app.register(cors, {
+      origin: AppConfig.client.url || true,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+      credentials: true,
+      allowedHeaders: ["Content-Type", "Authorization"],
+    });
+
     this.start();
   }
 

@@ -1,15 +1,37 @@
-import { v4 as uuidv4 } from "uuid";
 import {
   ServerRequest,
   ServerResponse,
   ApiResponse,
 } from "../../../../shared/infrastructure";
-import { IScooterModelRepository, ScooterModel } from "../../domain";
+import {
+  CreateScooterModelCommand,
+  UpdateScooterModelCommand,
+  DeleteScooterModelCommand,
+  GetAllScooterModelsQuery,
+  GetScooterModelByIdQuery,
+  GetScooterModelByUidQuery,
+  GetScooterModelsByManufacturerQuery,
+} from "../../domain";
+import {
+  CreateScooterModelHandler,
+  UpdateScooterModelHandler,
+  DeleteScooterModelHandler,
+  GetAllScooterModelsHandler,
+  GetScooterModelByIdHandler,
+  GetScooterModelByUidHandler,
+  GetScooterModelsByManufacturerHandler,
+} from "../../application";
 import { CreateScooterModelDTO, UpdateScooterModelDTO } from "../dtos";
 
 export class ScooterModelController {
   constructor(
-    private readonly scooterModelRepository: IScooterModelRepository
+    private readonly createScooterModelHandler: CreateScooterModelHandler,
+    private readonly updateScooterModelHandler: UpdateScooterModelHandler,
+    private readonly deleteScooterModelHandler: DeleteScooterModelHandler,
+    private readonly getAllScooterModelsHandler: GetAllScooterModelsHandler,
+    private readonly getScooterModelByIdHandler: GetScooterModelByIdHandler,
+    private readonly getScooterModelByUidHandler: GetScooterModelByUidHandler,
+    private readonly getScooterModelsByManufacturerHandler: GetScooterModelsByManufacturerHandler
   ) {}
 
   async createScooterModel(
@@ -17,10 +39,10 @@ export class ScooterModelController {
     res: ServerResponse
   ): Promise<void> {
     try {
-      const data = req.body as CreateScooterModelDTO;
+      const dto: CreateScooterModelDTO = req.body;
 
       // Validate required fields
-      if (!data.name || !data.manufacturer) {
+      if (!dto.name || !dto.manufacturer) {
         return ApiResponse.error(
           res,
           "Name and manufacturer are required fields",
@@ -28,50 +50,33 @@ export class ScooterModelController {
         );
       }
 
-      // Check if model with same name already exists
-      const existingModel = await this.scooterModelRepository.findByName(
-        data.name
-      );
-      if (existingModel) {
-        return ApiResponse.error(
-          res,
-          `Scooter model with name ${data.name} already exists`,
-          409
-        );
-      }
-
-      // Create new scooter model
-      const scooterModel = new ScooterModel({
-        uid: uuidv4(),
-        name: data.name,
-        manufacturer: data.manufacturer,
-        maxSpeed: data.maxSpeed,
-        maxRange: data.maxRange,
-        batteryCapacity: data.batteryCapacity,
-        weight: data.weight,
-        maxWeight: data.maxWeight,
-        dimensions: data.dimensions,
-        releaseYear: data.releaseYear,
-        maintenanceRequirements: [],
-        warrantyPeriod: data.warrantyPeriod || 12, // Default warranty period of 12 months
+      const command = new CreateScooterModelCommand({
+        name: dto.name,
+        manufacturer: dto.manufacturer,
+        maxSpeed: dto.maxSpeed,
+        maxRange: dto.maxRange,
+        batteryCapacity: dto.batteryCapacity,
+        weight: dto.weight,
+        maxWeight: dto.maxWeight,
+        dimensions: dto.dimensions,
+        releaseYear: dto.releaseYear,
+        warrantyPeriod: dto.warrantyPeriod,
       });
 
-      const createdModel = await this.scooterModelRepository.create(
-        scooterModel
-      );
+      const result = await this.createScooterModelHandler.execute(command);
 
-      return ApiResponse.success(
-        res,
-        "Scooter model created successfully",
-        createdModel,
-        201
-      );
+      if (result.success) {
+        ApiResponse.success(
+          res,
+          result.message,
+          { modelId: result.modelId, model: result.model },
+          201
+        );
+      } else {
+        ApiResponse.error(res, result.message, 400);
+      }
     } catch (error: any) {
-      return ApiResponse.error(
-        res,
-        `Failed to create scooter model: ${error.message}`,
-        500
-      );
+      ApiResponse.error(res, error.message, 500);
     }
   }
 
@@ -80,18 +85,16 @@ export class ScooterModelController {
     res: ServerResponse
   ): Promise<void> {
     try {
-      const scooterModels = await this.scooterModelRepository.findAll();
-      return ApiResponse.success(
-        res,
-        "Scooter models retrieved successfully",
-        scooterModels
-      );
+      const query = new GetAllScooterModelsQuery();
+      const result = await this.getAllScooterModelsHandler.execute(query);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, { models: result.models });
+      } else {
+        ApiResponse.error(res, result.message, 400);
+      }
     } catch (error: any) {
-      return ApiResponse.error(
-        res,
-        `Failed to retrieve scooter models: ${error.message}`,
-        500
-      );
+      ApiResponse.error(res, error.message, 500);
     }
   }
 
@@ -105,26 +108,16 @@ export class ScooterModelController {
         return ApiResponse.error(res, "Invalid ID format", 400);
       }
 
-      const scooterModel = await this.scooterModelRepository.findById(id);
-      if (!scooterModel) {
-        return ApiResponse.error(
-          res,
-          `Scooter model with ID ${id} not found`,
-          404
-        );
-      }
+      const query = new GetScooterModelByIdQuery({ id });
+      const result = await this.getScooterModelByIdHandler.execute(query);
 
-      return ApiResponse.success(
-        res,
-        "Scooter model retrieved successfully",
-        scooterModel
-      );
+      if (result.success) {
+        ApiResponse.success(res, result.message, { model: result.model });
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
     } catch (error: any) {
-      return ApiResponse.error(
-        res,
-        `Failed to retrieve scooter model: ${error.message}`,
-        500
-      );
+      ApiResponse.error(res, error.message, 500);
     }
   }
 
@@ -134,26 +127,40 @@ export class ScooterModelController {
   ): Promise<void> {
     try {
       const uid = (req.params as any).uid;
-      const scooterModel = await this.scooterModelRepository.findByUid(uid);
-      if (!scooterModel) {
-        return ApiResponse.error(
-          res,
-          `Scooter model with UID ${uid} not found`,
-          404
-        );
-      }
+      const query = new GetScooterModelByUidQuery({ uid });
+      const result = await this.getScooterModelByUidHandler.execute(query);
 
-      return ApiResponse.success(
-        res,
-        "Scooter model retrieved successfully",
-        scooterModel
-      );
+      if (result.success) {
+        ApiResponse.success(res, result.message, { model: result.model });
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
     } catch (error: any) {
-      return ApiResponse.error(
-        res,
-        `Failed to retrieve scooter model: ${error.message}`,
-        500
+      ApiResponse.error(res, error.message, 500);
+    }
+  }
+
+  async getScooterModelsByManufacturer(
+    req: ServerRequest,
+    res: ServerResponse
+  ): Promise<void> {
+    try {
+      const manufacturer = (req.params as any).manufacturer;
+      const query = new GetScooterModelsByManufacturerQuery({ manufacturer });
+      const result = await this.getScooterModelsByManufacturerHandler.execute(
+        query
       );
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, {
+          count: result.models?.length || 0,
+          models: result.models,
+        });
+      } else {
+        ApiResponse.error(res, result.message, 404);
+      }
+    } catch (error: any) {
+      ApiResponse.error(res, error.message, 500);
     }
   }
 
@@ -167,48 +174,30 @@ export class ScooterModelController {
         return ApiResponse.error(res, "Invalid ID format", 400);
       }
 
-      const data = req.body as UpdateScooterModelDTO;
-      const scooterModel = await this.scooterModelRepository.findById(id);
-      if (!scooterModel) {
-        return ApiResponse.error(
-          res,
-          `Scooter model with ID ${id} not found`,
-          404
-        );
+      const dto: UpdateScooterModelDTO = req.body;
+      const command = new UpdateScooterModelCommand({
+        id,
+        name: dto.name,
+        manufacturer: dto.manufacturer,
+        maxSpeed: dto.maxSpeed,
+        maxRange: dto.maxRange,
+        batteryCapacity: dto.batteryCapacity,
+        weight: dto.weight,
+        maxWeight: dto.maxWeight,
+        dimensions: dto.dimensions,
+        releaseYear: dto.releaseYear,
+        warrantyPeriod: dto.warrantyPeriod,
+      });
+
+      const result = await this.updateScooterModelHandler.execute(command);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message, { model: result.model });
+      } else {
+        ApiResponse.error(res, result.message, 404);
       }
-
-      // Update fields if provided
-      if (data.name !== undefined) scooterModel.name = data.name;
-      if (data.manufacturer !== undefined)
-        scooterModel.manufacturer = data.manufacturer;
-      if (data.maxSpeed !== undefined) scooterModel.maxSpeed = data.maxSpeed;
-      if (data.maxRange !== undefined) scooterModel.maxRange = data.maxRange;
-      if (data.batteryCapacity !== undefined)
-        scooterModel.batteryCapacity = data.batteryCapacity;
-      if (data.weight !== undefined) scooterModel.weight = data.weight;
-      if (data.maxWeight !== undefined) scooterModel.maxWeight = data.maxWeight;
-      if (data.dimensions !== undefined)
-        scooterModel.dimensions = data.dimensions;
-      if (data.releaseYear !== undefined)
-        scooterModel.releaseYear = data.releaseYear;
-      if (data.warrantyPeriod !== undefined)
-        scooterModel.warrantyPeriod = data.warrantyPeriod;
-
-      const updatedModel = await this.scooterModelRepository.update(
-        scooterModel
-      );
-
-      return ApiResponse.success(
-        res,
-        "Scooter model updated successfully",
-        updatedModel
-      );
     } catch (error: any) {
-      return ApiResponse.error(
-        res,
-        `Failed to update scooter model: ${error.message}`,
-        500
-      );
+      ApiResponse.error(res, error.message, 500);
     }
   }
 
@@ -222,24 +211,16 @@ export class ScooterModelController {
         return ApiResponse.error(res, "Invalid ID format", 400);
       }
 
-      const scooterModel = await this.scooterModelRepository.findById(id);
-      if (!scooterModel) {
-        return ApiResponse.error(
-          res,
-          `Scooter model with ID ${id} not found`,
-          404
-        );
+      const command = new DeleteScooterModelCommand({ id });
+      const result = await this.deleteScooterModelHandler.execute(command);
+
+      if (result.success) {
+        ApiResponse.success(res, result.message);
+      } else {
+        ApiResponse.error(res, result.message, 404);
       }
-
-      await this.scooterModelRepository.delete(id);
-
-      return ApiResponse.success(res, "Scooter model deleted successfully");
     } catch (error: any) {
-      return ApiResponse.error(
-        res,
-        `Failed to delete scooter model: ${error.message}`,
-        500
-      );
+      ApiResponse.error(res, error.message, 500);
     }
   }
 }

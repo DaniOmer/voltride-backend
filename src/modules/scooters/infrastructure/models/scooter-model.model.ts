@@ -13,6 +13,13 @@ interface ScooterModelCreationAttributes
   tableName: "scooter_models",
   underscored: true,
   timestamps: true,
+  // Force sync to create missing columns
+  hooks: {
+    beforeSync: (options) => {
+      options.force = false;
+      options.alter = true;
+    },
+  },
 })
 export class ScooterModelModel extends Model<
   IScooterModel,
